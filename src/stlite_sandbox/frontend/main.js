@@ -1,8 +1,3 @@
-// The `Streamlit` object exists because our html file includes
-// `streamlit-component-lib.js`.
-// If you get an error about "Streamlit" not being defined, that
-// means you're missing that file.
-
 function sendValue(value) {
   Streamlit.setComponentValue(value)
 }
@@ -14,14 +9,28 @@ function sendValue(value) {
  */
 function onRender(event) {
   // Only run the render code the first time the component is loaded.
-  if (!window.rendered) {
-    // You most likely want to get the data passed in like this
-    // const {input1, input2, input3} = event.detail.args
+  const {code, requirements, height} = event.detail.args
 
-    // You'll most likely want to pass some data back to Python like this
-    // sendValue({output1: "foo", output2: "bar"})
-    window.rendered = true
+  if (!window.controller) {
+    window.controller = stlite.mount({
+        requirements: requirements || [],
+        entrypoint: "streamlit_app.py",
+        files: {
+          "streamlit_app.py": code || "",
+        }
+    }, document.getElementById("root"))
+
+    window.lastCode = code;
   }
+
+  debugger;
+
+
+  if (window.lastCode !== code) {
+    window.controller.writeFile("streamlit_app.py", code || "");
+    window.lastCode = code;
+  }
+  Streamlit.setFrameHeight(height || 100);
 }
 
 // Render the component whenever python send a "render event"
