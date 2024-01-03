@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 # Import hashlib method for hashing string
-from hashlib import md5
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -19,7 +17,8 @@ _component_func = components.declare_component("stlite_sandbox", path=str(fronte
 def stlite_sandbox(
     code: str,
     requirements: list[str] | None = None,
-    key: Optional[str] = None,
+    key: str = "stlite_sandbox",
+    height: int = 500,
 ):
     """
     Add a descriptive docstring
@@ -27,13 +26,11 @@ def stlite_sandbox(
     if requirements is None:
         requirements = []
 
-    if key is None:
-        key = md5(code.encode() + str(requirements).encode()).hexdigest()
-
     component_value = _component_func(
         key=key,
         code=code,
         requirements=requirements,
+        height=height,
     )
 
     return component_value
@@ -46,7 +43,7 @@ import streamlit as st
 
 st.write("Hello world!")"""
     code = st.text_area("Code", value=default_code, height=200, key="code")
-    stlite_sandbox(code=code, key="blah")
+    stlite_sandbox(code=code, key="blah", height=500)
 
 
 if __name__ == "__main__":

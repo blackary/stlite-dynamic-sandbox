@@ -17,17 +17,24 @@ function onRender(event) {
         entrypoint: "streamlit_app.py",
         files: {
           "streamlit_app.py": code || "",
-        }
+        },
+        streamlitConfig: {
+          "server.runOnSave": true,
+          "client.showErrorDetails": false,
+        },
     }, document.getElementById("root"))
+
+    window.controller.disableToast();
 
     window.lastCode = code;
   }
 
-  debugger;
-
 
   if (window.lastCode !== code) {
-    window.controller.writeFile("streamlit_app.py", code || "");
+    window.controller.disableToast();
+    window.controller.writeFile("streamlit_app.py", code || "").catch(err => {
+      console.error(err);
+    });
     window.lastCode = code;
   }
   Streamlit.setFrameHeight(height || 100);
