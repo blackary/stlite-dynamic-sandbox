@@ -7,11 +7,20 @@ function sendValue(value) {
  * the component is initially loaded, and then again every time the
  * component gets new data from Python.
  */
+
+
+const equals = (a, b) => {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
 function onRender(event) {
   // Only run the render code the first time the component is loaded.
   const {code, requirements, height} = event.detail.args
 
-  if (!window.controller) {
+  if (!window.controller || !equals(window.lastRequirements, requirements)) {
+    if (window.controller) {
+      window.controller.unmount();
+    }
     window.controller = stlite.mount({
         requirements: requirements || [],
         entrypoint: "streamlit_app.py",
@@ -27,6 +36,7 @@ function onRender(event) {
     window.controller.disableToast();
 
     window.lastCode = code;
+    window.lastRequirements = requirements;
   }
 
 

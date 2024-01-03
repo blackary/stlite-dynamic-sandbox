@@ -15,22 +15,24 @@ def get_all_data(table: str) -> list[dict]:
 
 def select_where(
     table: str,
-    columns_to_select: str,
+    columns_to_select: str | list[str],
     column_to_check: str,
     column_equals: str,
+    limit: int | None = None,
 ) -> list[dict]:
     """
     Given a comma-separated list of columns, a column to check, and a value to check
     for it to be equal to, return all the matches rows, if any.
     """
-    return (
-        client.table(table)
-        .select(columns_to_select)
-        .eq(column_to_check, column_equals)
-        .execute()
-        .dict()
-        .get("data", [])
+    cols = (
+        [columns_to_select] if isinstance(columns_to_select, str) else columns_to_select
     )
+    query = client.table(table).select(*cols).eq(column_to_check, column_equals)
+
+    if limit:
+        query = query.limit(limit)
+
+    return query.execute().model_dump().get("data", [])
 
 
 def insert_row(data: dict, table: str) -> Any:

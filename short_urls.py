@@ -20,23 +20,23 @@ def get_hash(data: str, length: int = DEFAULT_HASH_LENGTH) -> str:
     return hashlib.md5(data.encode()).hexdigest()[:length]
 
 
-def get_hash_from_python(code: str) -> str:
-    return get_hash(code)
+def get_hash_from_python(code: str, requirements: str) -> str:
+    return get_hash(code + requirements)
 
 
-def get_python_from_hash(hash: str) -> str:
-    row = select_where(TABLE, "python", "hash", hash)
-    return row[0]["python"]
+def get_python_from_hash(hash: str) -> tuple[str, str]:
+    row = select_where(TABLE, ["python", "requirements"], "hash", hash, limit=1)
+    return row[0]["python"], row[0]["requirements"] or ""
 
 
 def is_hash_in_table(hash: str) -> bool:
-    row = select_where(TABLE, "hash", "hash", hash)
+    row = select_where(TABLE, "hash", "hash", hash, limit=1)
     return len(row) > 0
 
 
-def save_hash_if_not_exists(hash: str, code: str) -> str:
+def save_hash_if_not_exists(hash: str, code: str, requirements: str) -> str:
     if not is_hash_in_table(hash):
-        insert_row({"hash": hash, "python": code}, TABLE)
+        insert_row({"hash": hash, "python": code, "requirements": requirements}, TABLE)
     return hash
 
 
@@ -57,7 +57,7 @@ def get_embed_code_from_hash(hash: str):
     )
 
 
-def get_short_url_button(code: str, show_custom_hash: bool = True):
+def get_short_url_button(code: str, requirements: str, show_custom_hash: bool = True):
     custom_hash = None
     if show_custom_hash:
         custom_hash = st.text_input("Custom Hash").strip()
@@ -65,8 +65,8 @@ def get_short_url_button(code: str, show_custom_hash: bool = True):
         if custom_hash:
             hash = custom_hash
         else:
-            hash = get_hash_from_python(code=code)
-        save_hash_if_not_exists(hash, code)
+            hash = get_hash_from_python(code=code, requirements=requirements)
+        save_hash_if_not_exists(hash, code, requirements)
         url = get_short_url_from_hash(hash)
         embed_code = get_embed_code_from_hash(hash)
         st.write(f"[{url}]({url})")
@@ -74,7 +74,7 @@ def get_short_url_button(code: str, show_custom_hash: bool = True):
         st.code(embed_code, language="html")
 
 
-def expand_short_url() -> str | None:
+def expand_short_url() -> tuple[str, str] | None:
     query_params = st.experimental_get_query_params()
     if "q" in query_params:
         short_hash = query_params["q"][0]
