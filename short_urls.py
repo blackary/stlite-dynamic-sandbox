@@ -10,7 +10,7 @@ from db import insert_row, select_where
 
 TABLE = "url_table"
 DEFAULT_HASH_LENGTH = 6
-BASE_URL = st.secrets.get("BASE_URL", "https://playground2.streamlit.app")
+BASE_URL = st.secrets.get("BASE_URL", "https://stlite.streamlit.app")
 
 
 def get_hash(data: str, length: int = DEFAULT_HASH_LENGTH) -> str:
