@@ -22,10 +22,7 @@ function onRender(event) {
     window.location.search = searchStr;
   }
 
-  if (!window.controller || !equals(window.lastRequirements, requirements)) {
-    if (window.controller) {
-      window.controller.unmount();
-    }
+  if (!window.controller) {
     window.controller = stlite.mount({
         requirements: requirements || [],
         entrypoint: "streamlit_app.py",
@@ -41,6 +38,18 @@ function onRender(event) {
     window.controller.disableToast();
 
     window.lastCode = code;
+    window.lastRequirements = requirements;
+  }
+
+  if (!equals(window.lastRequirements, requirements)) {
+    window.controller.disableToast();
+    window.controller.install(requirements || []).catch(err => {
+      console.error(err);
+    }).then(() => {
+      window.controller.writeFile("streamlit_app.py", code + "\n\n" || "").catch(err => {
+        console.error(err);
+      });
+    });
     window.lastRequirements = requirements;
   }
 

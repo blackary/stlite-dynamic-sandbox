@@ -7,8 +7,6 @@ from pathlib import Path
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_monaco import st_monaco
-from streamlit_tags import st_tags
-
 
 # Tell streamlit that there is a component called stlite_sandbox,
 # and that the code to display that component is in the "frontend" folder
@@ -41,8 +39,27 @@ def stlite_sandbox(
         col1, col2 = st.columns(layout)
 
         with col1:
+            tab_vals = ["streamlit_app.py"]
+            if requirements_picker:
+                tab_vals.append("requirements.txt")
             with st.container(border=border):
-                code = st_monaco(value=code, language="python", height=f"{height}px")
+                tabs = st.tabs(tab_vals)
+                with tabs[0]:
+                    code = st_monaco(
+                        value=code, language="python", height=f"{height - 63}px"
+                    )
+                if requirements_picker:
+                    with tabs[1]:
+                        reqs_text = st_monaco(
+                            value="\n".join(requirements),
+                            language="text",
+                            height=f"{height - 63}px",
+                        )
+
+                        if reqs_text:
+                            requirements = [
+                                x.strip() for x in reqs_text.splitlines() if x.strip()
+                            ]
 
         with col2:
             with st.container(border=border):
@@ -62,9 +79,6 @@ def stlite_sandbox(
                 height=height + 15,
                 scrollable=scrollable,
             )
-
-    if requirements_picker:
-        requirements = st_tags(requirements, label="Requirements")
 
     return code, requirements
 
