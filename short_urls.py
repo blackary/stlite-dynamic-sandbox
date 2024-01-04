@@ -70,7 +70,8 @@ def get_short_url_button(code: str, requirements: str, show_custom_hash: bool = 
         url = get_short_url_from_hash(hash)
         embed_code = get_embed_code_from_hash(hash)
         st.write(f"[{url}]({url})")
-        st.write("Embed code")
+        # st.write("Embed code")
+        st.code(url, language="html")
         st.code(embed_code, language="html")
 
 
