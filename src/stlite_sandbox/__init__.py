@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-from pathlib import Path
+from typing import Sequence
 
-# Import hashlib method for hashing string
+from pathlib import Path
 
 import streamlit as st
 import streamlit.components.v1 as components
+from streamlit_monaco import st_monaco
+from streamlit_tags import st_tags
+
 
 # Tell streamlit that there is a component called stlite_sandbox,
 # and that the code to display that component is in the "frontend" folder
@@ -20,22 +23,69 @@ def stlite_sandbox(
     key: str = "stlite_sandbox",
     height: int = 500,
     scrollable: bool = False,
-):
+    editor: bool = False,
+    border: bool = True,
+    requirements_picker: bool = False,
+    layout: int | Sequence[int] | None = None,
+) -> tuple[str, list[str]]:
     """
     Add a descriptive docstring
     """
     if requirements is None:
         requirements = []
 
-    component_value = _component_func(
+    if layout is None:
+        layout = [1, 1]
+
+    if editor:
+        col1, col2 = st.columns(layout)
+
+        with col1:
+            with st.container(border=border):
+                code = st_monaco(value=code, language="python", height=f"{height}px")
+
+        with col2:
+            with st.container(border=border):
+                _stlite_sandbox(
+                    code=code,
+                    requirements=requirements,
+                    key=key,
+                    height=height + 15,
+                    scrollable=scrollable,
+                )
+    else:
+        with st.container(border=border):
+            _stlite_sandbox(
+                code=code,
+                requirements=requirements,
+                key=key,
+                height=height + 15,
+                scrollable=scrollable,
+            )
+
+    if requirements_picker:
+        requirements = st_tags(requirements, label="Requirements")
+
+    return code, requirements
+
+
+def _stlite_sandbox(
+    code: str,
+    requirements: list[str] | None = None,
+    key: str = "stlite_sandbox",
+    height: int = 500,
+    scrollable: bool = False,
+):
+    if requirements is None:
+        requirements = []
+
+    _component_func(
         key=key,
         code=code,
         requirements=requirements,
         height=height,
         scrollable=scrollable,
     )
-
-    return component_value
 
 
 def main():

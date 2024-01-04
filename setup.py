@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setuptools.setup(
     name="stlite-sandbox",
-    version="0.1.1",
+    version="0.1.2",
     author="Zachary Blackwood",
     author_email="zachary@streamlit.io",
     description="Streamlit component that allows you to dynamically create an stlite sandbox, but not reload the whole component when the code changes",

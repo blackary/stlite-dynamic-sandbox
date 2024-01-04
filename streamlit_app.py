@@ -1,8 +1,6 @@
 import streamlit as st
-from streamlit_monaco import st_monaco
 from stlite_sandbox import stlite_sandbox
 from short_urls import get_short_url_button, expand_short_url
-from streamlit_tags import st_tags
 
 st.set_page_config(
     page_title="Streamlit Sandbox", page_icon=":sunglasses:", layout="wide"
@@ -51,9 +49,10 @@ def update_code_query_param():
 
 
 show_code = st.toggle(
-    "Show code", value=True, on_change=update_code_query_param, key="show_code"
+    "Show editor", value=True, on_change=update_code_query_param, key="show_code"
 )
 
+_ = """
 if show_code:
     col1, col2 = st.columns(2)
 else:
@@ -74,7 +73,6 @@ with col2:
         import_statement = "import streamlit as st"
         if code and import_statement not in code:
             code = f"{import_statement}\n\n" + code
-        # reqs = [r for r in requirements if r]
         try:
             val = stlite_sandbox(
                 code=code,
@@ -84,6 +82,17 @@ with col2:
             )
         except Exception as e:
             st.error(e)
+"""
+
+code, requirements = stlite_sandbox(
+    code=code,
+    height=HEIGHT + 15,
+    requirements=requirements,
+    scrollable=True,
+    editor=show_code,
+    requirements_picker=True,
+)
+
 
 get_short_url_button(
     code=code, requirements="\n".join(requirements), show_custom_hash=False
