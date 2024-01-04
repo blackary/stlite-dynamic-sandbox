@@ -21,9 +21,9 @@ def stlite_sandbox(
     key: str = "stlite_sandbox",
     height: int = 500,
     scrollable: bool = False,
-    editor: bool = False,
+    editor: bool = True,
     border: bool = True,
-    requirements_picker: bool = False,
+    requirements_picker: bool = True,
     layout: int | Sequence[int] | None = None,
 ) -> tuple[str, list[str]]:
     """

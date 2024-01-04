@@ -52,38 +52,6 @@ show_code = st.toggle(
     "Show editor", value=True, on_change=update_code_query_param, key="show_code"
 )
 
-_ = """
-if show_code:
-    col1, col2 = st.columns(2)
-else:
-    col2 = st.empty()
-    col1 = col2
-
-with st.expander("Add requirements"):
-    # requirements = st.text_area("Requirements", value=requirements, height=100)
-    requirements = st_tags(requirements, label="")
-
-if show_code:
-    with col1:
-        with st.container(border=True):
-            code = st_monaco(value=code, language="python", height=f"{HEIGHT}px")
-
-with col2:
-    with st.container(border=True):
-        import_statement = "import streamlit as st"
-        if code and import_statement not in code:
-            code = f"{import_statement}\n\n" + code
-        try:
-            val = stlite_sandbox(
-                code=code,
-                height=HEIGHT + 15,
-                requirements=requirements,
-                scrollable=True,
-            )
-        except Exception as e:
-            st.error(e)
-"""
-
 code, requirements = stlite_sandbox(
     code=code,
     height=HEIGHT + 15,
