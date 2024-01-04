@@ -15,7 +15,12 @@ const equals = (a, b) => {
 
 function onRender(event) {
   // Only run the render code the first time the component is loaded.
-  const {code, requirements, height} = event.detail.args
+  const {code, requirements, height, scrollable} = event.detail.args
+
+  let searchStr = "?embed=true" + (scrollable ? "" : "&embed_options=disable_scrolling");
+  if (window.location.search !== searchStr) {
+    window.location.search = searchStr;
+  }
 
   if (!window.controller || !equals(window.lastRequirements, requirements)) {
     if (window.controller) {

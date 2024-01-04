@@ -2,3 +2,4 @@ streamlit
 -e .
 supabase
 streamlit-monaco
+streamlit-tags

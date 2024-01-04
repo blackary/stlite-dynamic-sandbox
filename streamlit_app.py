@@ -2,12 +2,13 @@ import streamlit as st
 from streamlit_monaco import st_monaco
 from stlite_sandbox import stlite_sandbox
 from short_urls import get_short_url_button, expand_short_url
+from streamlit_tags import st_tags
 
 st.set_page_config(
     page_title="Streamlit Sandbox", page_icon=":sunglasses:", layout="wide"
 )
 
-HEIGHT = 500
+HEIGHT = 600
 DEFAULT_CODE = """import streamlit as st
 import pandas as pd
 import numpy as np
@@ -25,11 +26,15 @@ df_edited = col1.data_editor(df)
 col2.line_chart(df_edited)
 """
 
-DEFAULT_DEPENDENCIES = "streamlit-extras\n"
+DEFAULT_DEPENDENCIES = ["streamlit-extras"]
 
 resp = expand_short_url()
 if resp is not None:
-    code, requirements = resp
+    code, raw_reqs = resp
+    if isinstance(raw_reqs, str):
+        requirements = [r for r in raw_reqs.splitlines() if r]
+    else:
+        requirements = raw_reqs
 else:
     code, requirements = DEFAULT_CODE, DEFAULT_DEPENDENCIES
 
@@ -56,7 +61,8 @@ else:
     col1 = col2
 
 with st.expander("Add requirements"):
-    requirements = st.text_area("Requirements", value=requirements, height=100)
+    # requirements = st.text_area("Requirements", value=requirements, height=100)
+    requirements = st_tags(requirements, label="")
 
 if show_code:
     with col1:
@@ -68,10 +74,17 @@ with col2:
         import_statement = "import streamlit as st"
         if code and import_statement not in code:
             code = f"{import_statement}\n\n" + code
-        reqs = [r for r in requirements.split("\n") if r]
+        # reqs = [r for r in requirements if r]
         try:
-            val = stlite_sandbox(code=code, height=HEIGHT + 15, requirements=reqs)
+            val = stlite_sandbox(
+                code=code,
+                height=HEIGHT + 15,
+                requirements=requirements,
+                scrollable=True,
+            )
         except Exception as e:
             st.error(e)
 
-get_short_url_button(code=code, requirements=requirements, show_custom_hash=False)
+get_short_url_button(
+    code=code, requirements="\n".join(requirements), show_custom_hash=False
+)

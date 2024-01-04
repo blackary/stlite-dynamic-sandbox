@@ -19,6 +19,7 @@ def stlite_sandbox(
     requirements: list[str] | None = None,
     key: str = "stlite_sandbox",
     height: int = 500,
+    scrollable: bool = False,
 ):
     """
     Add a descriptive docstring
@@ -31,6 +32,7 @@ def stlite_sandbox(
         code=code,
         requirements=requirements,
         height=height,
+        scrollable=scrollable,
     )
 
     return component_value
