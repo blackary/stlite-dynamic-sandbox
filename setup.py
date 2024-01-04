@@ -6,7 +6,7 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
 setuptools.setup(
-    name="stlite-dynamic-sandbox",
+    name="stlite-sandbox",
     version="0.1.0",
     author="Zachary Blackwood",
     author_email="zachary@streamlit.io",
