@@ -51,7 +51,7 @@ def stlite_sandbox(
                 if requirements_picker:
                     with tabs[1]:
                         reqs_text = st_monaco(
-                            value="\n".join(requirements),
+                            value="\n".join(requirements) + "\n",
                             language="text",
                             height=f"{height - 63}px",
                         )
@@ -63,22 +63,26 @@ def stlite_sandbox(
 
         with col2:
             with st.container(border=border):
-                _stlite_sandbox(
+                error = _stlite_sandbox(
                     code=code,
                     requirements=requirements,
                     key=key,
                     height=height + 15,
                     scrollable=scrollable,
                 )
+                if error:
+                    st.error(error)
     else:
         with st.container(border=border):
-            _stlite_sandbox(
+            error = _stlite_sandbox(
                 code=code,
                 requirements=requirements,
                 key=key,
                 height=height + 15,
                 scrollable=scrollable,
             )
+            if error:
+                st.error(error)
 
     return code, requirements
 
@@ -93,7 +97,7 @@ def _stlite_sandbox(
     if requirements is None:
         requirements = []
 
-    _component_func(
+    return _component_func(
         key=key,
         code=code,
         requirements=requirements,
