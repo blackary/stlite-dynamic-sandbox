@@ -45,14 +45,14 @@ def stlite_sandbox(
                 tabs = st.tabs(tab_vals)
                 with tabs[0]:
                     code = st_monaco(
-                        value=code, language="python", height=f"{height - 63}px"
+                        value=code, language="python", height=f"{height - 60}px"
                     )
                 if requirements_picker:
                     with tabs[1]:
                         reqs_text = st_monaco(
                             value="\n".join(requirements) + "\n",
                             language="text",
-                            height=f"{height - 63}px",
+                            height=f"{height - 60}px",
                         )
 
                         if reqs_text:
@@ -66,7 +66,7 @@ def stlite_sandbox(
                     code=code,
                     requirements=requirements,
                     key=key,
-                    height=height + 15,
+                    height=height + 13,
                     scrollable=scrollable,
                 )
                 if error:
@@ -77,7 +77,7 @@ def stlite_sandbox(
                 code=code,
                 requirements=requirements,
                 key=key,
-                height=height + 15,
+                height=height + 13,
                 scrollable=scrollable,
             )
             if error:

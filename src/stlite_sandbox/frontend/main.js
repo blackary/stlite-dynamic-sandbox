@@ -79,7 +79,7 @@ function onRender(event) {
   Streamlit.setFrameHeight(height || 100);
 }
 
-const debouncedOnRender = debounce(onRender, 500);
+const debouncedOnRender = debounce(onRender, 1000);
 
 // Render the component whenever python send a "render event"
 Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, debouncedOnRender)
