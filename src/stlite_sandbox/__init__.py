@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from typing import Sequence
-
 from pathlib import Path
+from typing import Sequence
 
 import streamlit as st
 import streamlit.components.v1 as components

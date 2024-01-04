@@ -1,6 +1,7 @@
 import streamlit as st
 from stlite_sandbox import stlite_sandbox
-from short_urls import get_short_url_button, expand_short_url
+
+from short_urls import expand_short_url, get_short_url_button
 
 st.set_page_config(
     page_title="Streamlit Sandbox", page_icon=":sunglasses:", layout="wide"
