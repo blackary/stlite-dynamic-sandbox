@@ -19,6 +19,7 @@ if "OPENAI_API_KEY" not in st.secrets:
     key = st.sidebar.text_input("Enter OpenAI Key", type="password")
 
     if not key:
+        st.info("Enter your OpenAI key in the sidebar to get started")
         st.stop()
 
 else:
