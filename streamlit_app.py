@@ -49,19 +49,23 @@ def update_code_query_param():
     st.experimental_set_query_params(**query_params)
 
 
-show_code = st.toggle(
-    "Show editor", value=True, on_change=update_code_query_param, key="show_code"
-)
+main, footer = st.empty(), st.empty()
 
-code, requirements = stlite_sandbox(
-    code=code,
-    height=HEIGHT + 15,
-    requirements=requirements,
-    scrollable=True,
-    editor=show_code,
-    requirements_picker=True,
-    theme="vs-dark",
-)
+with footer.container():
+    show_code = st.toggle(
+        "Show editor", value=True, on_change=update_code_query_param, key="show_code"
+    )
+
+with main.container():
+    code, requirements = stlite_sandbox(
+        code=code,
+        height=HEIGHT + 15,
+        requirements=requirements,
+        scrollable=True,
+        editor=show_code,
+        requirements_picker=True,
+        theme="vs-dark",
+    )
 
 
 get_short_url_button(
