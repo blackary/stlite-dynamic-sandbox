@@ -25,12 +25,15 @@ if "OPENAI_API_KEY" not in st.secrets:
 else:
     key = st.secrets["OPENAI_API_KEY"]
 
-DEFAULT_MODEL = "gpt-3.5-turbo-1106"
+MODELS = ("gpt-3.5-turbo-1106", "gpt-4-1106-preview")
+
 client = OpenAI(api_key=key)
 
-models = [model.id for model in client.models.list()]
+all_models = [model.id for model in client.models.list()]
 
-model = st.selectbox("OpenAI Model", models, index=models.index(DEFAULT_MODEL))
+models = [model for model in MODELS if model in all_models]
+
+model = st.selectbox("OpenAI Model", models)
 
 app_description = st.text_input("What sort of app should I make?", key="prompt")
 
