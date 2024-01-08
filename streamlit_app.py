@@ -14,9 +14,17 @@ import numpy as np
 
 st.title("Hello world!")
 
-st.button("Regenerate random numbers")
+if "seed" not in st.session_state:
+    st.session_state["seed"] = 42
 
-df = pd.DataFrame({"a": np.random.randn(5), "b": np.random.randn(5)})
+if st.button("Regenerate random numbers"):
+    st.session_state["seed"] += 1
+
+def get_data():
+    np.random.seed(st.session_state.seed)
+    return pd.DataFrame({"a": np.random.randn(5), "b": np.random.randn(5)})
+
+df = get_data()
 
 col1, col2 = st.columns([1, 2])
 
