@@ -91,6 +91,7 @@ code, requirements = stlite_sandbox(
     editor=True,
     requirements_picker=True,
     theme="vs-dark",
+    scrollable=True,
 )
 
 get_short_url_button(
