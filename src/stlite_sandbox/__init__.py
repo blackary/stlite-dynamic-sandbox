@@ -24,6 +24,7 @@ def stlite_sandbox(
     border: bool = True,
     requirements_picker: bool = True,
     layout: int | Sequence[int] | None = None,
+    theme: str = "streamlit",
 ) -> tuple[str, list[str]]:
     """
     Add a descriptive docstring
@@ -45,7 +46,10 @@ def stlite_sandbox(
                 tabs = st.tabs(tab_vals)
                 with tabs[0]:
                     code = st_monaco(
-                        value=code, language="python", height=f"{height - 60}px"
+                        value=code,
+                        language="python",
+                        height=f"{height - 60}px",
+                        theme=theme,
                     )
                 if requirements_picker:
                     with tabs[1]:
@@ -53,6 +57,7 @@ def stlite_sandbox(
                             value="\n".join(requirements) + "\n",
                             language="text",
                             height=f"{height - 60}px",
+                            theme=theme,
                         )
 
                         if reqs_text:

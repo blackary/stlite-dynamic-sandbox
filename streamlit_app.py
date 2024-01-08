@@ -60,6 +60,7 @@ code, requirements = stlite_sandbox(
     scrollable=True,
     editor=show_code,
     requirements_picker=True,
+    theme="vs-dark",
 )
 
 
