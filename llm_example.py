@@ -29,9 +29,13 @@ MODELS = ("gpt-3.5-turbo-1106", "gpt-4-1106-preview")
 
 client = OpenAI(api_key=key)
 
-all_models = [model.id for model in client.models.list()]
 
-models = [model for model in MODELS if model in all_models]
+@st.cache_data
+def get_models() -> list[str]:
+    return [model.id for model in client.models.list()]
+
+
+models = [model for model in MODELS if model in get_models()]
 
 model = st.selectbox("OpenAI Model", models)
 
@@ -82,9 +86,6 @@ def get_response(prompt: str, model: str) -> dict:
 response = get_response(app_description, model)
 code = response["code"]
 requirements = response["requirements"]
-
-# st.code(code, language="python")
-# st.code("\n".join(requirements), language="text")
 
 
 code, requirements = stlite_sandbox(
