@@ -51,7 +51,7 @@ def get_embed_code_from_hash(hash: str):
         width="100%"
         height="500px"
         frameBorder="0"
-        src="{BASE_URL}/~/+/?embedded=true&q={hash}">
+        src="{BASE_URL}/~/+/?embed=true&q={hash}">
     </iframe>
     """
     )
