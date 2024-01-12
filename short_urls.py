@@ -44,20 +44,25 @@ def get_short_url_from_hash(hash: str) -> str:
     return BASE_URL + "/?" + parse.urlencode({"q": hash})
 
 
-def get_embed_code_from_hash(hash: str):
+def get_embed_code_from_hash(hash: str, extra_params: str = ""):
+    url = f"{BASE_URL}/~/+/?embedded=true&q={hash}"
+    if extra_params:
+        url += "&" + extra_params
     return dedent(
         f"""
     <iframe
         width="100%"
         height="500px"
         frameBorder="0"
-        src="{BASE_URL}/~/+/?embedded=true&q={hash}">
+        src="{url}">
     </iframe>
     """
     )
 
 
-def get_short_url_button(code: str, requirements: str, show_custom_hash: bool = True):
+def get_short_url_button(
+    code: str, requirements: str, show_custom_hash: bool = True, extra_params: str = ""
+):
     custom_hash = None
     if show_custom_hash:
         custom_hash = st.text_input("Custom Hash").strip()
@@ -68,19 +73,23 @@ def get_short_url_button(code: str, requirements: str, show_custom_hash: bool = 
             hash = get_hash_from_python(code=code, requirements=requirements)
         save_hash_if_not_exists(hash, code, requirements)
         url = get_short_url_from_hash(hash)
-        embed_code = get_embed_code_from_hash(hash)
+        if extra_params:
+            url += "&" + extra_params
+        embed_code = get_embed_code_from_hash(hash, extra_params)
         st.write(f"[{url}]({url})")
-        # st.write("Embed code")
         st.code(url, language="html")
         st.code(embed_code, language="html")
 
 
 def expand_short_url() -> tuple[str, str] | None:
-    query_params = st.experimental_get_query_params()
-    if "q" in query_params:
-        short_hash = query_params["q"][0]
-        try:
-            return get_python_from_hash(short_hash)
-        except IndexError:
-            st.error(f"Invalid short url: {short_hash}")
+    try:
+        short_hash = st.query_params["q"]
+    except KeyError:
+        return None
+
+    try:
+        return get_python_from_hash(short_hash)
+    except IndexError:
+        st.error(f"Invalid short url: {short_hash}")
+
     return None

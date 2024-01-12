@@ -45,23 +45,22 @@ if resp is not None:
 else:
     code, requirements = DEFAULT_CODE, DEFAULT_DEPENDENCIES
 
-# Sync show_code with query params
-query_params = st.experimental_get_query_params()
-should_show_code = query_params.get("code", ["1"])[0] == "1"
+should_show_code = st.query_params.get("code", "1") == "1"
 
 
 def update_code_query_param():
-    query_params = st.experimental_get_query_params()
-    show_code = st.session_state["show_code"]
-    query_params["code"] = ["1" if show_code else "0"]
-    st.experimental_set_query_params(**query_params)
+    should_show_code = st.session_state["show_code"]
+    st.query_params["code"] = "1" if should_show_code else "0"
 
 
 main, footer = st.empty(), st.empty()
 
 with footer.container():
     show_code = st.toggle(
-        "Show editor", value=True, on_change=update_code_query_param, key="show_code"
+        "Show editor",
+        value=should_show_code,
+        on_change=update_code_query_param,
+        key="show_code",
     )
 
 with main.container():
@@ -74,8 +73,18 @@ with main.container():
         requirements_picker=True,
         theme="vs-dark",
     )
+    if not show_code:
+        with st.expander("Code"):
+            st.code(code, language="python")
 
+
+extra_params = ""
+if not show_code:
+    extra_params = "code=0"
 
 get_short_url_button(
-    code=code, requirements="\n".join(requirements), show_custom_hash=False
+    code=code,
+    requirements="\n".join(requirements),
+    show_custom_hash=False,
+    extra_params=extra_params,
 )
