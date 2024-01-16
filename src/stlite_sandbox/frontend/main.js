@@ -24,12 +24,20 @@ const equals = (a, b) => {
 }
 
 const handleError = (e) => {
-  sendValue(e.message);
+  sendValue({
+    "code": window.lastCode,
+    "requirements": window.lastRequirements,
+    "error": e.message
+  })
   console.error(e);
 }
 
 const clearError = () => {
-  sendValue("");
+  sendValue({
+    "code": window.lastCode,
+    "requirements": window.lastRequirements,
+    "error": ""
+  })
 }
 
 function onRender(event) {
@@ -66,6 +74,11 @@ function onRender(event) {
     window.controller.install(requirements || []).then(() => {
       clearError();
       window.controller.writeFile("streamlit_app.py", code + "\n\n" || "").then(clearError).catch(handleError);
+      sendValue({
+        "code": code,
+        "requirements": requirements,
+        "error": ""
+      })
     }).catch(handleError);
     window.lastRequirements = requirements;
   }
@@ -74,6 +87,11 @@ function onRender(event) {
     window.controller.disableToast();
     window.controller.writeFile("streamlit_app.py", code || "").then(clearError).catch(handleError);
     window.lastCode = code;
+    sendValue({
+      "code": code,
+      "requirements": requirements,
+      "error": ""
+    })
   }
 
   Streamlit.setFrameHeight(height || 100);

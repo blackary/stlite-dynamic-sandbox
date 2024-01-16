@@ -44,15 +44,13 @@ def get_short_url_from_hash(hash: str) -> str:
     return BASE_URL + "/?" + parse.urlencode({"q": hash})
 
 
-def get_embed_code_from_hash(hash: str, extra_params: str = ""):
-    url = f"{BASE_URL}/~/+/?embedded=true&q={hash}"
-    if extra_params:
-        url += "&" + extra_params
+def get_embed_code_from_hash(hash: str) -> str:
+    url = f"{BASE_URL}/~/+/?embedded=true&q={hash}&code=0"
     return dedent(
         f"""
     <iframe
         width="100%"
-        height="500px"
+        height="1000px"
         frameBorder="0"
         src="{url}">
     </iframe>
@@ -61,7 +59,9 @@ def get_embed_code_from_hash(hash: str, extra_params: str = ""):
 
 
 def get_short_url_button(
-    code: str, requirements: str, show_custom_hash: bool = True, extra_params: str = ""
+    code: str,
+    requirements: str,
+    show_custom_hash: bool = True,
 ):
     custom_hash = None
     if show_custom_hash:
@@ -73,9 +73,7 @@ def get_short_url_button(
             hash = get_hash_from_python(code=code, requirements=requirements)
         save_hash_if_not_exists(hash, code, requirements)
         url = get_short_url_from_hash(hash)
-        if extra_params:
-            url += "&" + extra_params
-        embed_code = get_embed_code_from_hash(hash, extra_params)
+        embed_code = get_embed_code_from_hash(hash)
         st.write(f"[{url}]({url})")
         st.code(url, language="html")
         st.code(embed_code, language="html")

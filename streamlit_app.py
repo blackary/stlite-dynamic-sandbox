@@ -34,16 +34,21 @@ col2.line_chart(df_edited)
 """
 
 DEFAULT_DEPENDENCIES = ["streamlit-extras"]
+KEY = "stlite_sandbox"
 
-resp = expand_short_url()
-if resp is not None:
-    code, raw_reqs = resp
-    if isinstance(raw_reqs, str):
-        requirements = [r for r in raw_reqs.splitlines() if r]
-    else:
-        requirements = raw_reqs
+if st.session_state.get(KEY, None):
+    code = st.session_state[KEY]["code"]
+    requirements = st.session_state[KEY]["requirements"]
 else:
-    code, requirements = DEFAULT_CODE, DEFAULT_DEPENDENCIES
+    resp = expand_short_url()
+    if resp is not None:
+        code, raw_reqs = resp
+        if isinstance(raw_reqs, str):
+            requirements = [r for r in raw_reqs.splitlines() if r]
+        else:
+            requirements = raw_reqs
+    else:
+        code, requirements = DEFAULT_CODE, DEFAULT_DEPENDENCIES
 
 should_show_code = st.query_params.get("code", "1") == "1"
 
@@ -71,6 +76,7 @@ with main.container():
         scrollable=True,
         editor=show_code,
         requirements_picker=True,
+        key=KEY,
         theme="vs-dark",
     )
     if not show_code:
@@ -78,13 +84,9 @@ with main.container():
             st.code(code, language="python")
 
 
-extra_params = ""
-if not show_code:
-    extra_params = "code=0"
-
-get_short_url_button(
-    code=code,
-    requirements="\n".join(requirements),
-    show_custom_hash=False,
-    extra_params=extra_params,
-)
+if show_code:
+    get_short_url_button(
+        code=code,
+        requirements="\n".join(requirements),
+        show_custom_hash=False,
+    )
