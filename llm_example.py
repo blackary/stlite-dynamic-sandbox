@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 
-st.title(":robot: App Generator")
+st.title("🤖 App Generator")
 
 if "OPENAI_API_KEY" not in st.secrets:
     key = st.sidebar.text_input("Enter OpenAI Key", type="password")
