@@ -67,26 +67,28 @@ def stlite_sandbox(
 
         with col2:
             with st.container(border=border):
-                error = _stlite_sandbox(
+                _stlite_sandbox(
                     code=code,
                     requirements=requirements,
                     key=key,
                     height=height + 13,
                     scrollable=scrollable,
                 )
-                if error:
-                    st.error(error)
+                if key in st.session_state and st.session_state[key]:
+                    if error := st.session_state[key]["error"]:
+                        st.error(error)
     else:
         with st.container(border=border):
-            error = _stlite_sandbox(
+            _stlite_sandbox(
                 code=code,
                 requirements=requirements,
                 key=key,
                 height=height + 13,
                 scrollable=scrollable,
             )
-            if error:
-                st.error(error)
+            if key in st.session_state and st.session_state[key]:
+                if error := st.session_state[key]["error"]:
+                    st.error(error)
 
     return code, requirements
 
@@ -107,6 +109,7 @@ def _stlite_sandbox(
         requirements=requirements,
         height=height,
         scrollable=scrollable,
+        default={"code": code, "requirements": requirements, "error": ""},
     )
 
 

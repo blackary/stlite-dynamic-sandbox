@@ -5,6 +5,7 @@ and change the code without requiring the whole component to be reloaded. Comes 
 an (optional) built-in editor using `streamlit-monaco` so you can quickly play with your
 code and see what happens.
 
+
 ## Installation instructions
 
 ```sh

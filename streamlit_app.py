@@ -34,34 +34,38 @@ col2.line_chart(df_edited)
 """
 
 DEFAULT_DEPENDENCIES = ["streamlit-extras"]
+KEY = "stlite_sandbox"
 
-resp = expand_short_url()
-if resp is not None:
-    code, raw_reqs = resp
-    if isinstance(raw_reqs, str):
-        requirements = [r for r in raw_reqs.splitlines() if r]
-    else:
-        requirements = raw_reqs
+if st.session_state.get(KEY, None):
+    code = st.session_state[KEY]["code"]
+    requirements = st.session_state[KEY]["requirements"]
 else:
-    code, requirements = DEFAULT_CODE, DEFAULT_DEPENDENCIES
+    resp = expand_short_url()
+    if resp is not None:
+        code, raw_reqs = resp
+        if isinstance(raw_reqs, str):
+            requirements = [r for r in raw_reqs.splitlines() if r]
+        else:
+            requirements = raw_reqs
+    else:
+        code, requirements = DEFAULT_CODE, DEFAULT_DEPENDENCIES
 
-# Sync show_code with query params
-query_params = st.experimental_get_query_params()
-should_show_code = query_params.get("code", ["1"])[0] == "1"
+should_show_code = st.query_params.get("code", "1") == "1"
 
 
 def update_code_query_param():
-    query_params = st.experimental_get_query_params()
-    show_code = st.session_state["show_code"]
-    query_params["code"] = ["1" if show_code else "0"]
-    st.experimental_set_query_params(**query_params)
+    should_show_code = st.session_state["show_code"]
+    st.query_params["code"] = "1" if should_show_code else "0"
 
 
 main, footer = st.empty(), st.empty()
 
 with footer.container():
     show_code = st.toggle(
-        "Show editor", value=True, on_change=update_code_query_param, key="show_code"
+        "Show editor",
+        value=should_show_code,
+        on_change=update_code_query_param,
+        key="show_code",
     )
 
 with main.container():
@@ -72,10 +76,17 @@ with main.container():
         scrollable=True,
         editor=show_code,
         requirements_picker=True,
+        key=KEY,
         theme="vs-dark",
     )
+    if not show_code:
+        with st.expander("Code"):
+            st.code(code, language="python")
 
 
-get_short_url_button(
-    code=code, requirements="\n".join(requirements), show_custom_hash=False
-)
+if show_code:
+    get_short_url_button(
+        code=code,
+        requirements="\n".join(requirements),
+        show_custom_hash=False,
+    )
