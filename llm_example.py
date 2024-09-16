@@ -3,9 +3,9 @@ from textwrap import dedent
 
 import streamlit as st
 from openai import OpenAI
-from stlite_sandbox import stlite_sandbox
 
 from short_urls import get_short_url_button
+from stlite_sandbox import stlite_sandbox
 
 st.set_page_config(
     page_title="App Generator",
