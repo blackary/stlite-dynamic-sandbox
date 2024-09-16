@@ -45,7 +45,7 @@ def get_short_url_from_hash(hash: str) -> str:
 
 
 def get_embed_code_from_hash(hash: str) -> str:
-    url = f"{BASE_URL}/~/+/?embedded=true&q={hash}&code=0"
+    url = f"{BASE_URL}/~/+/?embed=true&q={hash}&code=0"
     return dedent(
         f"""
     <iframe
